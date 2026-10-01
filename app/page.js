@@ -81,10 +81,12 @@ export default async function Home() {
   const [markets, news] = await Promise.all([getMarkets(), getNews()]);
   const now = new Date();
   const date = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' }).format(now);
-  const featured = news[0];
-  const remaining = news.slice(1, 16);
+  const generalNews = news.filter((item) => item.category === 'General News').slice(0, 6);
+  const wallStreetNews = news.filter((item) => item.category === 'Wall Street').slice(0, 6);
+  const investmentBankingNews = news.filter((item) => item.category === 'Investment Banking').slice(0, 6);
+  const featured = wallStreetNews[0] || generalNews[0] || news[0];
   const keyMovers = markets.filter((item) => item.ok).sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct)).slice(0, 4);
-  const keyNews = news.slice(0, 5);
+  const keyNews = wallStreetNews.slice(0, 5);
 
   return (
     <main className="page-shell">
@@ -159,24 +161,44 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="section-block">
+        <div className="section-heading"><div><p className="eyebrow">GENERAL NEWS</p><h2>Business and economic news you should know</h2></div></div>
+        <div className="news-list">
+          {generalNews.length ? generalNews.map((item) => <a className="news-item" href={item.link} target="_blank" rel="noreferrer" key={`general-${item.title}-${item.pubDate}`}>
+            <div><div className="news-kicker">{item.source}</div><h3>{item.title}</h3><span>{timeAgo(item.pubDate)}</span></div>
+            <ExternalLink size={17}/>
+          </a>) : <div className="empty-card">No general business headlines loaded right now.</div>}
+        </div>
+      </section>
+
+      <section className="section-block">
+        <div className="section-heading"><div><p className="eyebrow">WALL STREET</p><h2>Markets, rates, earnings, and investor sentiment</h2></div></div>
+        <div className="news-list">
+          {wallStreetNews.length ? wallStreetNews.map((item) => <a className="news-item" href={item.link} target="_blank" rel="noreferrer" key={`wallstreet-${item.title}-${item.pubDate}`}>
+            <div><div className="news-kicker">{item.source}</div><h3>{item.title}</h3><span>{timeAgo(item.pubDate)}</span></div>
+            <ExternalLink size={17}/>
+          </a>) : <div className="empty-card">No Wall Street headlines loaded right now.</div>}
+        </div>
+      </section>
+
       <section className="news-layout section-block">
         <div className="news-column">
-          <div className="section-heading"><div><p className="eyebrow">MORE NEWS</p><h2>What else to know today</h2></div></div>
+          <div className="section-heading"><div><p className="eyebrow">INVESTMENT BANKING</p><h2>Deals, IPOs, M&amp;A, and capital markets</h2></div></div>
           <div className="news-list">
-            {remaining.length ? remaining.map((item) => <a className="news-item" href={item.link} target="_blank" rel="noreferrer" key={`${item.title}-${item.pubDate}`}>
-              <div><div className="news-kicker">{item.category} · {item.source}</div><h3>{item.title}</h3><span>{timeAgo(item.pubDate)}</span></div>
+            {investmentBankingNews.length ? investmentBankingNews.map((item) => <a className="news-item" href={item.link} target="_blank" rel="noreferrer" key={`ib-${item.title}-${item.pubDate}`}>
+              <div><div className="news-kicker">{item.source}</div><h3>{item.title}</h3><span>{timeAgo(item.pubDate)}</span></div>
               <ExternalLink size={17}/>
-            </a>) : <div className="empty-card">No headlines loaded right now.</div>}
+            </a>) : <div className="empty-card">No investment banking headlines loaded right now.</div>}
           </div>
         </div>
         <aside className="routine-card">
-          <p className="eyebrow">5-MINUTE ROUTINE</p>
-          <h2>Daily market check</h2>
+          <p className="eyebrow">IB WATCHLIST</p>
+          <h2>What to notice</h2>
           <ol>
-            <li><span>01</span><div><strong>Scan the indexes</strong><p>Check direction, not just the number.</p></div></li>
-            <li><span>02</span><div><strong>Read the lead story</strong><p>Find the main catalyst moving markets.</p></div></li>
-            <li><span>03</span><div><strong>Check economy + Fed</strong><p>Watch rates, inflation, jobs, and policy.</p></div></li>
-            <li><span>04</span><div><strong>Scan company news</strong><p>Look for earnings, deals, and major guidance.</p></div></li>
+            <li><span>01</span><div><strong>M&amp;A activity</strong><p>Watch deal size, valuation multiples, financing, and strategic rationale.</p></div></li>
+            <li><span>02</span><div><strong>IPO market</strong><p>Track new filings, pricing, first-day performance, and investor demand.</p></div></li>
+            <li><span>03</span><div><strong>Capital markets</strong><p>Follow debt issuance, equity raises, refinancing, and credit conditions.</p></div></li>
+            <li><span>04</span><div><strong>Bank activity</strong><p>Notice which banks are advising major deals and leading offerings.</p></div></li>
           </ol>
           <p className="disclaimer">For information only, not investment advice.</p>
         </aside>
