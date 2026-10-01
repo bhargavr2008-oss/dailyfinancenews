@@ -52,7 +52,7 @@ function marketMeaning(item) {
 }
 
 function newsMeaning(item) {
-  const text = item.title.toLowerCase();
+  const text = `${item.title} ${item.summary || ''}`.toLowerCase();
   if (/fed|federal reserve|rate|rates|yield|treasury/.test(text)) {
     return 'This matters because interest-rate expectations affect borrowing costs, bond yields, and stock valuations, especially for growth companies.';
   }
@@ -155,7 +155,8 @@ export default async function Home() {
           {keyNews.length ? keyNews.map((item) => <article className="key-news-card" key={`key-${item.title}-${item.pubDate}`}>
             <div className="news-kicker">{item.category} · {item.source} · {timeAgo(item.pubDate)}</div>
             <h3>{item.title}</h3>
-            <p><strong>What it means:</strong> {newsMeaning(item)}</p>
+            <p className="article-summary"><strong>Summary:</strong> {item.summary}</p>
+            <p><strong>What you need to know:</strong> {newsMeaning(item)}</p>
             <a className="read-link dark-link" href={item.link} target="_blank" rel="noreferrer">Read original <ExternalLink size={14}/></a>
           </article>) : <div className="empty-card">Key news is temporarily unavailable.</div>}
         </div>
@@ -164,20 +165,30 @@ export default async function Home() {
       <section className="section-block">
         <div className="section-heading"><div><p className="eyebrow">GENERAL NEWS</p><h2>Business and economic news you should know</h2></div></div>
         <div className="news-list">
-          {generalNews.length ? generalNews.map((item) => <a className="news-item" href={item.link} target="_blank" rel="noreferrer" key={`general-${item.title}-${item.pubDate}`}>
-            <div><div className="news-kicker">{item.source}</div><h3>{item.title}</h3><span>{timeAgo(item.pubDate)}</span></div>
-            <ExternalLink size={17}/>
-          </a>) : <div className="empty-card">No general business headlines loaded right now.</div>}
+          {generalNews.length ? generalNews.map((item) => <article className="news-item detailed-news-item" key={`general-${item.title}-${item.pubDate}`}>
+            <div>
+              <div className="news-kicker">{item.source} · {timeAgo(item.pubDate)}</div>
+              <h3>{item.title}</h3>
+              <p className="article-summary"><strong>Summary:</strong> {item.summary}</p>
+              <p className="article-impact"><strong>What you need to know:</strong> {newsMeaning(item)}</p>
+              <a className="read-link dark-link" href={item.link} target="_blank" rel="noreferrer">Read original <ExternalLink size={14}/></a>
+            </div>
+          </article>) : <div className="empty-card">No general business headlines loaded right now.</div>}
         </div>
       </section>
 
       <section className="section-block">
         <div className="section-heading"><div><p className="eyebrow">WALL STREET</p><h2>Markets, rates, earnings, and investor sentiment</h2></div></div>
         <div className="news-list">
-          {wallStreetNews.length ? wallStreetNews.map((item) => <a className="news-item" href={item.link} target="_blank" rel="noreferrer" key={`wallstreet-${item.title}-${item.pubDate}`}>
-            <div><div className="news-kicker">{item.source}</div><h3>{item.title}</h3><span>{timeAgo(item.pubDate)}</span></div>
-            <ExternalLink size={17}/>
-          </a>) : <div className="empty-card">No Wall Street headlines loaded right now.</div>}
+          {wallStreetNews.length ? wallStreetNews.map((item) => <article className="news-item detailed-news-item" key={`wallstreet-${item.title}-${item.pubDate}`}>
+            <div>
+              <div className="news-kicker">{item.source} · {timeAgo(item.pubDate)}</div>
+              <h3>{item.title}</h3>
+              <p className="article-summary"><strong>Summary:</strong> {item.summary}</p>
+              <p className="article-impact"><strong>What you need to know:</strong> {newsMeaning(item)}</p>
+              <a className="read-link dark-link" href={item.link} target="_blank" rel="noreferrer">Read original <ExternalLink size={14}/></a>
+            </div>
+          </article>) : <div className="empty-card">No Wall Street headlines loaded right now.</div>}
         </div>
       </section>
 
@@ -185,10 +196,15 @@ export default async function Home() {
         <div className="news-column">
           <div className="section-heading"><div><p className="eyebrow">INVESTMENT BANKING</p><h2>Deals, IPOs, M&amp;A, and capital markets</h2></div></div>
           <div className="news-list">
-            {investmentBankingNews.length ? investmentBankingNews.map((item) => <a className="news-item" href={item.link} target="_blank" rel="noreferrer" key={`ib-${item.title}-${item.pubDate}`}>
-              <div><div className="news-kicker">{item.source}</div><h3>{item.title}</h3><span>{timeAgo(item.pubDate)}</span></div>
-              <ExternalLink size={17}/>
-            </a>) : <div className="empty-card">No investment banking headlines loaded right now.</div>}
+            {investmentBankingNews.length ? investmentBankingNews.map((item) => <article className="news-item detailed-news-item" key={`ib-${item.title}-${item.pubDate}`}>
+              <div>
+                <div className="news-kicker">{item.source} · {timeAgo(item.pubDate)}</div>
+                <h3>{item.title}</h3>
+                <p className="article-summary"><strong>Summary:</strong> {item.summary}</p>
+                <p className="article-impact"><strong>What you need to know:</strong> {newsMeaning(item)}</p>
+                <a className="read-link dark-link" href={item.link} target="_blank" rel="noreferrer">Read original <ExternalLink size={14}/></a>
+              </div>
+            </article>) : <div className="empty-card">No investment banking headlines loaded right now.</div>}
           </div>
         </div>
         <aside className="routine-card">
